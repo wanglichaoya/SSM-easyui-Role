@@ -1,0 +1,65 @@
+[
+  {
+    "text": "菜单",
+    // state : "closed",
+    "state": "open",
+    "children": [
+      {
+        "text": "用户管理",
+        "state": "",
+        "attributes": {
+          "url": "../../user2/test.action"
+        }
+      },
+      {
+        "text": "用户查询",
+        "iconCls": "icon-save",
+        "attributes": {
+          "url": "http://www.baidu.com"
+        }
+      },
+      {
+        "text": "一级菜单3",
+        "state": "open",
+        "children": [
+          {
+            "text": "二级菜单1",
+            "attributes": {
+              "url": ""
+            }
+          },
+          {
+            "text": "二级菜单2",
+            "attributes": {
+              "url": ""
+            }
+          },
+          {
+            "text": "一级菜单3",
+            "state": "open",
+            "children": [
+              {
+                "text": "二级菜单1",
+                "attributes": {
+                  "url": ""
+                }
+              },
+              {
+                "text": "二级菜单2",
+                "attributes": {
+                  "url": ""
+                }
+              },
+              {
+                "text": "三级菜单3",
+                "attributes": {
+                  "url": ""
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

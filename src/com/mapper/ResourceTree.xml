@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybaits.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.IResourceTreeDao">
+
+    <resultMap id="TreeRoleMap" type="com.po.TreeNode">
+
+        <id property="mId" column="M_ID"></id>
+        <result property="text" column="M_NAME"></result>
+        <result property="url" column="M_Url"></result>
+        <result property="state" column="M_State"></result>
+    </resultMap>
+
+    <resultMap id="TreeRoleMapChile" type="com.po.TreeNode">
+       <id property="mId" column="M_Id"></id>
+       <result property="text" column="M_Name"></result>
+       <result property="url" column="M_Url"></result>
+       <result property="state" column="M_State"></result>
+    </resultMap>
+
+
+    <!--查询出所有的父级菜单-->
+    <select id="loadTreeByRoleParent" resultMap="TreeRoleMap">
+        select M_ID,M_NAME,M_Url,M_State from t_menu_item mi where mi.M_Pid = 0
+    </select>
+    <!--查询出所有父级菜单对应的子菜单-->
+
+    <select id="loadTreeByRoleChild" resultMap="TreeRoleMap" parameterType="map">
+        SELECT
+            M_Id,
+            M_Name,
+            M_Url,
+            M_State
+        FROM
+            t_menu_item mi2
+        WHERE
+                mi2.M_Pid IN (
+                SELECT
+                    mi1.M_Id
+                FROM
+                    t_menu_item mi1
+                WHERE
+                    mi1.M_Pid = 0
+                  AND mi1.M_Name = #{text}
+            )
+    </select>
+
+
+</mapper>

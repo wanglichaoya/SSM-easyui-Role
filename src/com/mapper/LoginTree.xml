@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybaits.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ILoginDao">
+
+
+    <resultMap id="TreeRoleMap" type="com.po.TreeNode">
+
+        <id property="mId" column="M_ID"></id>
+        <result property="text" column="M_NAME"></result>
+        <result property="url" column="M_Url"></result>
+        <result property="state" column="M_State"></result>
+    </resultMap>
+
+    <resultMap id="UserRoleMap" type="com.po.UserInfo">
+        <result property="roleName" column="R_Name"></result>
+    </resultMap>
+    <!--查询用户是否登录-->
+    <select id="login" resultType="com.po.UserInfo" parameterType="com.po.UserInfo">
+        select u.username
+        from t_user u
+        where u.username = #{userName}
+          and u.password = #{password}
+    </select>
+
+    <!--根据用户名，查询出用户名对应的角色，根据角色查找出角色对应的资源，（父类）-->
+    <select id="selectResByName" resultMap="TreeRoleMap" parameterType="java.lang.String">
+        select *
+        from t_menu_item mi
+        where mi.M_Id in (
+            select rm.M_id
+            from t_role_menu rm
+            where rm.R_Id = (
+                select ur.R_id
+                from t_user_role ur
+                where ur.U_id =
+                      (select u.id from t_user u where u.username = #{username})))
+          and M_Pid = 0
+    </select>
+
+    <select id="loadTreeByRoleChild" resultMap="TreeRoleMap" parameterType="map">
+        SELECT
+            M_Id,
+            M_Name,
+            M_Url,
+            M_State
+        FROM
+            t_menu_item mi2
+        WHERE
+                mi2.M_Pid IN (
+                SELECT
+                    mi1.M_Id
+                FROM
+                    t_menu_item mi1
+                WHERE
+                    mi1.M_Pid = 0
+                  AND mi1.M_Name = #{text}
+            )
+          and mi2.M_Id in (
+            select M_Id
+            from t_menu_item mi
+            where mi.M_Id in (
+                select rm.M_id
+                from t_role_menu rm
+                where rm.R_Id = (
+                    select ur.R_id
+                    from t_user_role ur
+                    where ur.U_id =
+                          (select u.id from t_user u where u.username = #{username})))
+              and mi.M_Pid != 0
+        )
+    </select>
+
+    <!--根据用户名查询用户的角色-->
+    <select id="getUserRole" parameterType="com.po.UserInfo" resultMap="UserRoleMap">
+        select R_Name
+        from t_roles r
+        where r.R_ID in (
+            select ur.r_Id
+            from t_user u,
+                 t_user_role ur
+            where u.username = #{userName}
+              and ur.u_ID = u.id)
+    </select>
+
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybaits.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.IUserInfoDao">
+
+    <select id="queryUser" resultType="com.po.UserInfo" parameterType="com.po.UserInfo">
+        select * from t_user
+        limit #{start},#{end}
+    </select>
+
+    <!-- useGeneratedKeys默认值为false，keyProperty的值对应的是User类中的主键名 -->
+  <!--  <insert id="getGeneratedKey2" parameterType="cn.kolbe.mybatis.domain.User" useGeneratedKeys="true" keyProperty="id">
+        insert into users(name, password) values(#{name}, #{password})
+    </insert>-->
+
+    <!-- useGeneratedKeys默认值为false，keyProperty的值对应的是User类中的主键名 -->
+    <insert id="insert" parameterType="com.po.UserInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user(username,password,age,sex,province,salary)
+        values(#{userName},#{password},#{age},#{sex},#{province},#{salary})
+    </insert>
+
+    <update id="editUser" parameterType="com.po.UserInfo">
+        update t_user set userName = #{userName},age = #{age} ,sex = #{sex},province = #{province},
+                          salary = #{salary} where id = #{id}
+    </update>
+
+    <delete id="delUser" parameterType="int">
+        delete from t_user where id = #{id}
+    </delete>
+
+    <select id="queryTotal" resultType="int">
+        select count(1) from t_user
+    </select>
+
+
+</mapper>
